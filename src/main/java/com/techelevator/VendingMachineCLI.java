@@ -1,37 +1,44 @@
 package com.techelevator;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 /*
  * This class is provided to you as a *suggested* class to start
  * your project. Feel free to refactor this code as you see fit.
  */
 public class VendingMachineCLI {
 
-	private static final String MAIN_MENU_OPTION_DISPLAY_ITEMS = "Display Vending Machine Items";
-	private static final String MAIN_MENU_OPTION_PURCHASE = "Purchase";
-	private static final String[] MAIN_MENU_OPTIONS = { MAIN_MENU_OPTION_DISPLAY_ITEMS, MAIN_MENU_OPTION_PURCHASE };
+    List<Inventory> items = new ArrayList<>();
 
-	public static void main(String[] args) {
-		VendingMachineCLI cli = new VendingMachineCLI();
-		cli.run();
-	}
+    public static void main(String[] args) throws FileNotFoundException {
+        VendingMachineCLI cli = new VendingMachineCLI();
+        cli.run();
 
-	public void run() {
+    }
 
-		while (true) {
-			/*
-			 * TODO: Use a method to initialize this value
-			 */
-			String choice = "";
+    public void run() throws FileNotFoundException {
 
-			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
+        System.out.println("(1) Display Vending Machine Items\n" +
+                "(2) Purchase\n" +
+                "(3) Exit\n");
 
-				// display vending machine items
+        Scanner userInput = new Scanner(System.in);
+        int numberSelection = Integer.parseInt(userInput.nextLine());
 
-			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
+        File mainItems = new File("main.csv");
 
-				// do purchase
+        try (Scanner filepath = new Scanner(mainItems)) {
+            boolean isOneSelected = false;
+            if (!isOneSelected) {
+                System.out.println(items);
+            }
+        }
 
-			}
-		}
-	}
+
+    }
+
 }
