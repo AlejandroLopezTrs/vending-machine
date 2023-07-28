@@ -1,16 +1,30 @@
 package com.techelevator;
 
 import java.math.BigDecimal;
-import java.util.Scanner;
 
-public class Money extends VendingMachineCLI {
+public class Transactions{
 
-}
 
-//    private boolean didFeed = false;
+    private BigDecimal startingAmount = BigDecimal.valueOf(0.00);
+    private final BigDecimal ONE_DOLLAR = BigDecimal.valueOf(1.00);
+    private final BigDecimal FIVE_DOLLAR = BigDecimal.valueOf(5.00);
+    private final BigDecimal TEN_DOLLAR = BigDecimal.valueOf(10.00);
 
-//    public void feedMoney() {
-//        while (true) {
+    public BigDecimal getStartingAmount() {
+        return startingAmount;
+    }
+
+    public BigDecimal getONE_DOLLAR() {
+        return ONE_DOLLAR;
+    }
+
+    public BigDecimal getFIVE_DOLLAR() {
+        return FIVE_DOLLAR;
+    }
+
+    public BigDecimal getTEN_DOLLAR() {
+        return TEN_DOLLAR;
+    }
 //            System.out.println("Current Money Provided: $" + currentMoney);
 //            System.out.println("(1)Feed Money\n" +
 //                    "(2) Select Product\n" +
@@ -36,3 +50,6 @@ public class Money extends VendingMachineCLI {
 //        }
 //    }
 //}
+
+
+}
