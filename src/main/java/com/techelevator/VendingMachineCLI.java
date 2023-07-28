@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.ToDoubleBiFunction;
 
 /*
  * This class is provided to you as a *suggested* class to start
@@ -24,7 +23,6 @@ public class VendingMachineCLI {
     private int itemQuantity = 5;
 
 
-
     public static void main(String[] args) throws FileNotFoundException {
         VendingMachineCLI cli = new VendingMachineCLI();
         cli.run();
@@ -38,7 +36,7 @@ public class VendingMachineCLI {
         this.purchaseMenu();
     }
 
-//TODO: main menu method
+    //TODO: main menu method
     public void mainMenu() {
         while (true) {
             System.out.println("(1) Display Vending Machine Items\n" +
@@ -54,12 +52,12 @@ public class VendingMachineCLI {
                 this.purchaseMenu();
             } else if (numberSelection == 3) {
                 System.out.println("Thank you! Enjoy your snacks!");
-                return;
+                break;
             }
         }
     }
 
-//TODO: load inventory method
+    //TODO: load inventory method
     public void loadInventory() throws FileNotFoundException {
         String filePath = "main.csv";
         File file = new File(filePath);
@@ -79,7 +77,7 @@ public class VendingMachineCLI {
 
     }
 
-//TODO: purchase menu method
+    //TODO: purchase menu method
     public void purchaseMenu() {
 
         while (true) {
@@ -99,14 +97,22 @@ public class VendingMachineCLI {
         }
     }
 
-//TODO: get user input method
+    //TODO: get user input method
     public int getUserInput() {
         Scanner userInput = new Scanner(System.in);
         int numberSelection = Integer.parseInt(userInput.nextLine());
         return numberSelection;
     }
 
-//TODO: money in account method
+    //TODO: get user input method for purchse selection
+    public String getUserInputPurchase() {
+        Scanner userInput = new Scanner(System.in);
+        String userInputItemCode = (userInput.nextLine());
+        return userInputItemCode;
+    }
+
+
+    //TODO: money in account method
     public BigDecimal moneyInAccount() {
         while (true) {
             System.out.println("Current Money Provided: " + moneyAdded + "\n");
@@ -126,49 +132,84 @@ public class VendingMachineCLI {
         }
     }
 
-//TODO: select product method
+    //TODO: select product method2
     public void selectProduct() {
         while (true) {
             System.out.println("Which type of item would you like?\n" + "(1) Drink\n"
-                    + "(2) Candy\n" + "(3) Munchy\n" + "(4) Gum");
+                    + "(2) Candy\n" + "(3) Munchy\n" + "(4) Gum\n" + "(5) Return to purchase menu");
             int numberSelection = this.getUserInput();
             if (numberSelection == 1) {
-                List<Inventory> drinksList = items.subList(1,4);
+                List<Inventory> drinksList = items.subList(0, 4);
                 System.out.println(drinksList);
                 this.itemPurchase();
-            }   else if (numberSelection == 2) {
-                    List<Inventory> candyList = items.subList(4,8);
-                    System.out.println(candyList);
+            } else if (numberSelection == 2) {
+                List<Inventory> candyList = items.subList(4, 8);
+                System.out.println(candyList);
                 this.itemPurchase();
-            }   else if (numberSelection == 3) {
-                        List<Inventory> munchyList = items.subList(8,12);
-                        System.out.println(munchyList);
+            } else if (numberSelection == 3) {
+                List<Inventory> munchyList = items.subList(8, 12);
+                System.out.println(munchyList);
                 this.itemPurchase();
-            }   else if (numberSelection == 4) {
-                            List<Inventory> gumList = items.subList(12,16);
-                            System.out.println(gumList);
+            } else if (numberSelection == 4) {
+                List<Inventory> gumList = items.subList(12, 16);
+                System.out.println(gumList);
                 this.itemPurchase();
-
+            } else if (numberSelection == 5) {
+                return;
             }
 
         }
 
     }
 
-//TODO: purchasing item method
-    private void itemPurchase(){
-
-        for (Inventory item : items) {
-            System.out.println("Item Code: " + item.getItemCode() + " Item: " + item.getItemName()+ "     Quantity: " + item.getItemQuantity());
-            int userSelection = this.getUserInput();
-            moneyUsed.add(item.getItemPrice());
-            remainingBalance = moneyAdded.subtract(moneyUsed);
-            this.itemQuantity = item.getItemQuantity() - 1;
-            System.out.println(this.itemQuantity);
+    //TODO: purchasing item method
+    private void itemPurchase() {
+        Inventory selectedItem;
+        String userInputItemCode;
+        while (true) {
+            System.out.println("Please enter the item code you would like to purchase.");
+            userInputItemCode = this.getUserInputPurchase();
+            selectedItem = null;
+            for (Inventory item : items) {
+                if (item.getItemCode().equals(userInputItemCode)) {
+                    selectedItem = item;
+                    break;
+                }
+            }
+            if (selectedItem == null) {
+                System.out.println("Invalid Item Code. Please try again.");
+                continue;
+            }
+            BigDecimal itemPrice = selectedItem.getItemPrice();
+            BigDecimal remainingBalance = moneyAdded.subtract(itemPrice);
+            if (remainingBalance.compareTo(BigDecimal.ZERO) <= 0) {
+                System.out.println("Insufficient Funds. Please return to purchase menu to add more funds.");
+                return;
+            }
+            this.itemQuantity = selectedItem.getItemQuantity() - 1;
+            System.out.println("Remaining Balance: $" + remainingBalance);
+            moneyAdded = remainingBalance;
+            System.out.println("Would you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
+            int numberSelection = this.getUserInput();
+            if (numberSelection != 1) {
+                return;
+            }
         }
     }
-//TODO: finish transaction method
+
+    //TODO: ITEM PRICE
+    private BigDecimal itemPrice(String userInputItemCode) {
+        for (Inventory item : items) {
+            if (item.getItemCode().equals(userInputItemCode)) {
+                return item.getItemPrice();
+            }
+        }
+        return BigDecimal.ZERO;
+    }
+
+    // //TODO: finish transaction method
     private void finishTransaction() {
-        System.out.println(remainingBalance);
+//      System.out.println(remainingBalance);
+
     }
 }

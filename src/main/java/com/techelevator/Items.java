@@ -39,12 +39,14 @@ public class Items implements Inventory {
         this.itemQuantity = itemQuantity;
     }
 
-
-
-
     @Override
     public void addItem(String items) {
+    }
 
+    @Override
+    public String toString() {
+        return "Item Code:" + itemCode + " Item: "+ itemName + " Price: $" + itemPrice
+                + " Quanity: " + itemQuantity + "\n";
     }
 
 }
