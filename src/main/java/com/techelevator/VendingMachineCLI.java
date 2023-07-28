@@ -19,6 +19,7 @@ public class VendingMachineCLI implements TImeAndDate {
     private final BigDecimal TEN_DOLLAR = BigDecimal.valueOf(10.00);
     private BigDecimal remainingBalance = BigDecimal.valueOf(0.00);
     private int itemQuantity = 5;
+    private int purchaseItemCount = 0;
 
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -192,22 +193,24 @@ public class VendingMachineCLI implements TImeAndDate {
                 System.out.println("Insufficient Funds. Please return to purchase menu to add more funds.");
                 return;
             }
-
-
-            int purchaseItemCount = 0;
-            BigDecimal discountPrice = itemPrice;
-            if (purchaseItemCount % 2 == 1 && isJuly()) {
-                discountPrice = itemPrice.subtract(BigDecimal.ONE);
+            int purchaseQuantity = selectedItem.getItemQuantity();
+            if (purchaseQuantity == 0) {
+                System.out.println("Item is SOLD OUT! Please enter another item code!");
+                continue;
             }
 
-
+            BigDecimal discountPrice = itemPrice;
+            if (purchaseItemCount % 2 == 1) {
+                discountPrice = itemPrice.subtract(BigDecimal.ONE);
+            }
             String itemCategory = selectedItem.getItemType();
             String message = itemTypeMessage.get(itemCategory);
             String itemName = selectedItem.getItemName();
-            this.itemQuantity = selectedItem.getItemQuantity() - 1;
             System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
             moneyAdded = remainingBalance.subtract(discountPrice);
             purchaseItemCount++;
+            selectedItem.setItemQuantity(purchaseQuantity - 1);
+
             System.out.println("\nWould you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
             int numberSelection = this.getUserInput();
             if (numberSelection != 1) {

@@ -45,8 +45,14 @@ public class Items implements Inventory {
 
     @Override
     public String toString() {
-        return "Item Code:" + itemCode + " Item: "+ itemName + " Price: $" + itemPrice
+        return "Item Code:" + itemCode + " Item: " + itemName + " Price: $" + itemPrice
                 + " Quanity: " + itemQuantity + "\n";
+    }
+
+    @Override
+    public int setItemQuantity(int newQuantity) {
+        this.itemQuantity = newQuantity;
+        return itemQuantity;
     }
 
 }
