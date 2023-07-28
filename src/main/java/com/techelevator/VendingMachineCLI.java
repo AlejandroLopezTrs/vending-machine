@@ -3,15 +3,13 @@ package com.techelevator;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.util.*;
 
-/*
- * This class is provided to you as a *suggested* class to start
- * your project. Feel free to refactor this code as you see fit.
- */
-public class VendingMachineCLI {
+
+public class VendingMachineCLI implements TImeAndDate {
 
     List<Inventory> items = new ArrayList<>();
     private BigDecimal moneyUsed = BigDecimal.valueOf(0.00);
@@ -39,14 +37,14 @@ public class VendingMachineCLI {
     //TODO: main menu method
     public void mainMenu() {
         while (true) {
-            System.out.println("(1) Display Vending Machine Items\n" +
+            System.out.println("\n(1) Display Vending Machine Items\n" +
                     "(2) Purchase\n" +
                     "(3) Exit\n");
             int numberSelection = this.getUserInput();
 
             if (numberSelection == 1) {
                 for (Inventory item : items) {
-                    System.out.println("Item: " + item.getItemName() + "     Quantity: " + item.getItemQuantity());
+                    System.out.println("Item: " + item.getItemName() + " | Quantity: " + item.getItemQuantity());
                 }
             } else if (numberSelection == 2) {
                 this.purchaseMenu();
@@ -164,6 +162,14 @@ public class VendingMachineCLI {
 
     //TODO: purchasing item method
     private void itemPurchase() {
+
+        Map<String, String> itemTypeMessage = new HashMap<>();
+        itemTypeMessage.put("Drink", "Glug Glug, Yum!");
+        itemTypeMessage.put("Candy", "Yummy Yummy, So Sweet!");
+        itemTypeMessage.put("Munchy", "Crunch Crunch, Yum!");
+        itemTypeMessage.put("Gum", "Chew Chew, Yum!");
+
+
         Inventory selectedItem;
         String userInputItemCode;
         while (true) {
@@ -186,10 +192,23 @@ public class VendingMachineCLI {
                 System.out.println("Insufficient Funds. Please return to purchase menu to add more funds.");
                 return;
             }
+
+
+            int purchaseItemCount = 0;
+            BigDecimal discountPrice = itemPrice;
+            if (purchaseItemCount % 2 == 1 && isJuly()) {
+                discountPrice = itemPrice.subtract(BigDecimal.ONE);
+            }
+
+
+            String itemCategory = selectedItem.getItemType();
+            String message = itemTypeMessage.get(itemCategory);
+            String itemName = selectedItem.getItemName();
             this.itemQuantity = selectedItem.getItemQuantity() - 1;
-            System.out.println("Remaining Balance: $" + remainingBalance);
-            moneyAdded = remainingBalance;
-            System.out.println("Would you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
+            System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
+            moneyAdded = remainingBalance.subtract(discountPrice);
+            purchaseItemCount++;
+            System.out.println("\nWould you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
             int numberSelection = this.getUserInput();
             if (numberSelection != 1) {
                 return;
@@ -197,8 +216,18 @@ public class VendingMachineCLI {
         }
     }
 
+    // TODO: BOGODO AUGUST CHECK
+    public boolean isJuly(TImeAndDate timeAndDate) {
+
+        LocalDateTime currentDateTime = timeAndDate.getDateTime();
+        Month currentMonth = currentDateTime.getMonth();
+
+        return currentMonth == Month.JULY;
+    }
+
+
     //TODO: ITEM PRICE
-    private BigDecimal itemPrice(String userInputItemCode) {
+    public BigDecimal itemPrice(String userInputItemCode) {
         for (Inventory item : items) {
             if (item.getItemCode().equals(userInputItemCode)) {
                 return item.getItemPrice();
@@ -207,9 +236,15 @@ public class VendingMachineCLI {
         return BigDecimal.ZERO;
     }
 
-    // //TODO: finish transaction method
-    private void finishTransaction() {
-//      System.out.println(remainingBalance);
 
+    //TODO: finish transaction method
+    private void finishTransaction() {
+        System.out.println(remainingBalance);
+
+    }
+
+    @Override
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.now();
     }
 }
