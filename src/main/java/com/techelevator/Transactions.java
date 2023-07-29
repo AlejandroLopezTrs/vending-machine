@@ -2,7 +2,7 @@ package com.techelevator;
 
 import java.math.BigDecimal;
 
-public class Transactions{
+public class Transactions {
 
 
     private BigDecimal startingAmount = BigDecimal.valueOf(0.00);

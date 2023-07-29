@@ -2,8 +2,8 @@ package com.techelevator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
@@ -12,14 +12,15 @@ import java.util.*;
 public class VendingMachineCLI implements TImeAndDate {
 
     List<Inventory> items = new ArrayList<>();
-    private BigDecimal moneyUsed = BigDecimal.valueOf(0.00);
-    private BigDecimal moneyAdded = BigDecimal.valueOf(0.00);
-    private final BigDecimal ONE_DOLLAR = BigDecimal.valueOf(1.00);
-    private final BigDecimal FIVE_DOLLAR = BigDecimal.valueOf(5.00);
-    private final BigDecimal TEN_DOLLAR = BigDecimal.valueOf(10.00);
-    private BigDecimal remainingBalance = BigDecimal.valueOf(0.00);
+    private BigDecimal moneyUsed = BigDecimal.valueOf(0.00).setScale(2);
+    private BigDecimal moneyAdded = BigDecimal.valueOf(0.00).setScale(2);
+    private final BigDecimal ONE_DOLLAR = BigDecimal.valueOf(1.00).setScale(2);
+    private final BigDecimal FIVE_DOLLAR = BigDecimal.valueOf(5.00).setScale(2);
+    private final BigDecimal TEN_DOLLAR = BigDecimal.valueOf(10.00).setScale(2);
+    private BigDecimal remainingBalance = BigDecimal.valueOf(0.00).setScale(2);
     private int itemQuantity = 5;
-    private int purchaseItemCount = 0;
+
+
 
 
     public static void main(String[] args) throws FileNotFoundException {
@@ -31,29 +32,43 @@ public class VendingMachineCLI implements TImeAndDate {
     public void run() throws FileNotFoundException {
 
         this.loadInventory();
+        this.vendingMachineLog();
         this.mainMenu();
-        this.purchaseMenu();
+        this.makeChange(moneyAdded);
     }
 
     //TODO: main menu method
     public void mainMenu() {
-        while (true) {
-            System.out.println("\n(1) Display Vending Machine Items\n" +
-                    "(2) Purchase\n" +
-                    "(3) Exit\n");
-            int numberSelection = this.getUserInput();
+        try {
+            while (true) {
+                System.out.println("\n(1) Display Vending Machine Items\n" +
+                        "(2) Purchase\n" +
+                        "(3) Exit\n");
+                int numberSelection = this.getUserInput();
 
-            if (numberSelection == 1) {
-                for (Inventory item : items) {
-                    System.out.println("Item: " + item.getItemName() + " | Quantity: " + item.getItemQuantity());
+                if (numberSelection == 1) {
+                    for (Inventory item : items) {
+                        System.out.println("Item: " + item.getItemName() + " | Quantity: " + item.getItemQuantity());
+                    }
+                } else if (numberSelection == 2) {
+                    this.purchaseMenu();
+                } else if (numberSelection == 3) {
+                    break;
+                } else if (numberSelection < 1 || numberSelection > 3) {
+                    System.out.println("Invalid number selection: Please enter a number between 1 and 3 and try again.");
                 }
-            } else if (numberSelection == 2) {
-                this.purchaseMenu();
-            } else if (numberSelection == 3) {
-                System.out.println("Thank you! Enjoy your snacks!");
-                break;
             }
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid selection: Please enter a number and try again.");
         }
+    }
+
+    //TODO:vendingMachineDog
+    public void vendingMachineLog() throws FileNotFoundException {
+        String filePath = "log.csv";
+        File file = new File(filePath);
+        PrintWriter vendingMachineLog = new PrintWriter(file);
+
     }
 
     //TODO: load inventory method
@@ -80,22 +95,26 @@ public class VendingMachineCLI implements TImeAndDate {
     public void purchaseMenu() {
 
         while (true) {
-            System.out.println("Current Money Provided: " + moneyAdded + "\n");
-            System.out.println("(1) Feed Money\n" +
-                    "(2) Select Product\n" +
-                    "(3) Finish Transaction\n");
-            int numberSelection = this.getUserInput();
-            if (numberSelection == 1) {
-                this.moneyInAccount();
-            } else if (numberSelection == 2) {
-                this.selectProduct();
-            } else if (numberSelection == 3) {
-                this.finishTransaction();
-                return;
+            try {
+                System.out.println("Current Money Provided: " + moneyAdded + "\n");
+                System.out.println("(1) Feed Money\n" +
+                        "(2) Select Product\n" +
+                        "(3) Finish Transaction\n");
+                int numberSelection = this.getUserInput();
+                if (numberSelection == 1) {
+                    this.moneyInAccount();
+                } else if (numberSelection == 2) {
+                    this.selectProduct();
+                } else if (numberSelection == 3) {
+                    this.finishTransaction(moneyAdded);
+                    return;
+                } else if (numberSelection < 1 || numberSelection > 3 ) {
+                    System.out.println("Invalid selection: Please enter a number between 1 and 3.");                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid selection: Please enter a number and try again.");
             }
         }
     }
-
     //TODO: get user input method
     public int getUserInput() {
         Scanner userInput = new Scanner(System.in);
@@ -103,7 +122,7 @@ public class VendingMachineCLI implements TImeAndDate {
         return numberSelection;
     }
 
-    //TODO: get user input method for purchse selection
+    //TODO: get user input method for purchase selection
     public String getUserInputPurchase() {
         Scanner userInput = new Scanner(System.in);
         String userInputItemCode = (userInput.nextLine());
@@ -114,52 +133,69 @@ public class VendingMachineCLI implements TImeAndDate {
     //TODO: money in account method
     public BigDecimal moneyInAccount() {
         while (true) {
-            System.out.println("Current Money Provided: " + moneyAdded + "\n");
-            System.out.println("How much would you like to add?\n" +
-                    "(1) $1.00\n" + "(2) $5.00\n" + "(3) $10.00\n" + "(4) Back to purchase menu");
-            int numberSelection = this.getUserInput();
-            if (numberSelection == 1) {
-                moneyAdded = moneyAdded.add(ONE_DOLLAR);
-            } else if (numberSelection == 2) {
-                moneyAdded = moneyAdded.add(FIVE_DOLLAR);
-            } else if (numberSelection == 3) {
-                moneyAdded = moneyAdded.add(TEN_DOLLAR);
-            } else if (numberSelection == 4) {
-                return moneyAdded;
-
+            try {
+                System.out.println("Current Money Provided: $ " + moneyAdded + "\n");
+                System.out.println("How much would you like to add?\n" +
+                        "(1) $1.00\n" + "(2) $5.00\n" + "(3) $10.00\n" + "(4) Back to purchase menu");
+                int numberSelection = this.getUserInput();
+                //TODO numberformatexception
+                if (numberSelection == 1) {
+                    moneyAdded = moneyAdded.add(ONE_DOLLAR);
+                } else if (numberSelection == 2) {
+                    moneyAdded = moneyAdded.add(FIVE_DOLLAR);
+                } else if (numberSelection == 3) {
+                    moneyAdded = moneyAdded.add(TEN_DOLLAR);
+                } else if (numberSelection == 4) {
+                    return moneyAdded;
+                } else if
+                (numberSelection < 1 || numberSelection > 4) {
+                    System.out.println("Invalid number selection: Please enter a number between 1 and 4 and try again.");
+                }
+            } catch (NumberFormatException e){
+                System.out.println("Invalid selection: Please enter a number and try again.");
             }
         }
-    }
+            }
+
+
 
     //TODO: select product method2
     public void selectProduct() {
         while (true) {
-            System.out.println("Which type of item would you like?\n" + "(1) Drink\n"
-                    + "(2) Candy\n" + "(3) Munchy\n" + "(4) Gum\n" + "(5) Return to purchase menu");
-            int numberSelection = this.getUserInput();
-            if (numberSelection == 1) {
-                List<Inventory> drinksList = items.subList(0, 4);
-                System.out.println(drinksList);
-                this.itemPurchase();
-            } else if (numberSelection == 2) {
-                List<Inventory> candyList = items.subList(4, 8);
-                System.out.println(candyList);
-                this.itemPurchase();
-            } else if (numberSelection == 3) {
-                List<Inventory> munchyList = items.subList(8, 12);
-                System.out.println(munchyList);
-                this.itemPurchase();
-            } else if (numberSelection == 4) {
-                List<Inventory> gumList = items.subList(12, 16);
-                System.out.println(gumList);
-                this.itemPurchase();
-            } else if (numberSelection == 5) {
-                return;
-            }
+            try {
 
+                System.out.println("Which type of item would you like?\n" + "(1) Drink\n"
+                        + "(2) Candy\n" + "(3) Munchy\n" + "(4) Gum\n" + "(5) Return to purchase menu");
+                int numberSelection = this.getUserInput();
+                if (numberSelection == 1) {
+                    List<Inventory> drinksList = items.subList(0, 4);
+                    System.out.println(drinksList);
+                    this.itemPurchase();
+                } else if (numberSelection == 2) {
+                    List<Inventory> candyList = items.subList(4, 8);
+                    System.out.println(candyList);
+                    this.itemPurchase();
+                } else if (numberSelection == 3) {
+                    List<Inventory> munchyList = items.subList(8, 12);
+                    System.out.println(munchyList);
+                    this.itemPurchase();
+                } else if (numberSelection == 4) {
+                    List<Inventory> gumList = items.subList(12, 16);
+                    System.out.println(gumList);
+                    this.itemPurchase();
+                } else if (numberSelection == 5) {
+                    return;
+                } else if (numberSelection >= 0 || numberSelection > 5) {
+                    System.out.println("Invalid number selection: Please enter a number between 1 and 5 and try again.");
+                }
+
+            } catch (NumberFormatException e){
+                System.out.println("Invalid selection: Please enter a number and try again.");
+        }
         }
 
     }
+
 
     //TODO: purchasing item method
     private void itemPurchase() {
@@ -173,6 +209,7 @@ public class VendingMachineCLI implements TImeAndDate {
 
         Inventory selectedItem;
         String userInputItemCode;
+        int purchaseItemCount = 0;
         while (true) {
             System.out.println("Please enter the item code you would like to purchase.");
             userInputItemCode = this.getUserInputPurchase();
@@ -184,80 +221,82 @@ public class VendingMachineCLI implements TImeAndDate {
                 }
             }
             if (selectedItem == null) {
-                System.out.println("Invalid Item Code. Please try again.");
+                System.out.println("Invalid Item Code: Please try again.");
                 continue;
             }
-            BigDecimal itemPrice = selectedItem.getItemPrice();
+            if(selectedItem.getItemQuantity() <= 0){
+                System.out.println("Out of Stock");
+                continue;
+            }
+            BigDecimal itemPriceAdjustment = this.adjustPrice(purchaseItemCount);
+            BigDecimal itemPrice = selectedItem.getItemPrice().add(itemPriceAdjustment);
             BigDecimal remainingBalance = moneyAdded.subtract(itemPrice);
+
             if (remainingBalance.compareTo(BigDecimal.ZERO) <= 0) {
                 System.out.println("Insufficient Funds. Please return to purchase menu to add more funds.");
                 return;
             }
-            int purchaseQuantity = selectedItem.getItemQuantity();
-            if (purchaseQuantity == 0) {
-                System.out.println("Item is SOLD OUT! Please enter another item code!");
-                continue;
-            }
-
-            BigDecimal discountPrice = itemPrice;
-            if (purchaseItemCount % 2 == 1) {
-                discountPrice = itemPrice.subtract(BigDecimal.ONE);
-            }
+            purchaseItemCount++;
+            selectedItem.setItemQuantity(selectedItem.getItemQuantity() - 1);
             String itemCategory = selectedItem.getItemType();
             String message = itemTypeMessage.get(itemCategory);
             String itemName = selectedItem.getItemName();
+
             System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
-            moneyAdded = remainingBalance.subtract(discountPrice);
-            purchaseItemCount++;
-            selectedItem.setItemQuantity(purchaseQuantity - 1);
+            moneyAdded = remainingBalance;
 
             System.out.println("\nWould you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
             int numberSelection = this.getUserInput();
             if (numberSelection != 1) {
                 return;
             }
+
         }
+
     }
 
-    // TODO: BOGODO AUGUST CHECK
-    public boolean isJuly(TImeAndDate timeAndDate) {
-
-        LocalDateTime currentDateTime = timeAndDate.getDateTime();
+    //TODO: ITEM  combine methods
+    private BigDecimal adjustPrice(int purchaseItemCount) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
         Month currentMonth = currentDateTime.getMonth();
-
-        return currentMonth == Month.JULY;
-    }
-
-
-    //TODO: ITEM PRICE
-    public BigDecimal itemPrice(String userInputItemCode) {
-        for (Inventory item : items) {
-            if (item.getItemCode().equals(userInputItemCode)) {
-                return item.getItemPrice();
-            }
+        if (currentMonth == Month.JULY && purchaseItemCount % 2 == 1) {
+            return BigDecimal.valueOf(-1);
         }
         return BigDecimal.ZERO;
     }
-    //TODO: ITEM  combine methods
-    private BigDecimal getItemPrice(String userInputItemCode, int purchaseItemCount) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        Month currentMonth = currentDateTime.getMonth();
-        BigDecimal itemPrice = BigDecimal.ZERO;
-        if (purchaseItemCount % 2 == 0 && currentMonth == Month.JULY) {
-            itemPrice.subtract(BigDecimal.ONE);
-        }
-        for (Inventory item : items) {
-            if (item.getItemCode().equals(userInputItemCode)) {
-                return itemPrice;
+
+//TODO: makeChange class
+    private final BigDecimal NICKEL = BigDecimal.valueOf(0.05);
+    private final BigDecimal DIME = BigDecimal.valueOf(0.10);
+    private final BigDecimal QUARTER = BigDecimal.valueOf(0.25);
+    private BigDecimal makeChange(BigDecimal moneyAdded) {
+        int nickelCount = 0;
+        int dimeCount = 0;
+        int quarterCount = 0;
+        while (true) {
+            while (moneyAdded.compareTo(QUARTER) >= 0.00) {
+                moneyAdded = moneyAdded.subtract(QUARTER);
+                quarterCount++;
+            } while
+            (moneyAdded.compareTo(DIME) >= 0.00) {
+                moneyAdded = moneyAdded.subtract(DIME);
+                dimeCount++;
+            } while
+            (moneyAdded.compareTo(NICKEL) >= 0.00) {
+                moneyAdded = moneyAdded.subtract(NICKEL);
+                nickelCount++;
             }
+            System.out.println("Change Dispensed: \n" + nickelCount + " Nickels\n" + dimeCount + " Dimes\n" + quarterCount + " Quarters\n");
+            this.finishTransaction(moneyAdded);
+            break;
         }
-        return itemPrice;
+        return moneyAdded;
     }
 
     //TODO: finish transaction method
-    private void finishTransaction() {
-        System.out.println(remainingBalance);
-
+    private void finishTransaction(BigDecimal moneyAdded) {
+        System.out.println("Remaining Balance: $" + moneyAdded);
+        System.out.println("Thank you! Enjoy your snacks!");
     }
 
     @Override

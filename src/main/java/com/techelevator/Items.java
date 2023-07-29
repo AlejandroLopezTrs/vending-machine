@@ -14,6 +14,11 @@ public class Items implements Inventory {
         return itemQuantity;
     }
 
+    @Override
+    public void setItemQuantity(int itemQuantity) {
+       this.itemQuantity = itemQuantity;
+    }
+
     public String getItemName() {
         return itemName;
     }
@@ -45,14 +50,8 @@ public class Items implements Inventory {
 
     @Override
     public String toString() {
-        return "Item Code:" + itemCode + " Item: " + itemName + " Price: $" + itemPrice
+        return "Item Code:" + itemCode + " Item: "+ itemName + " Price: $" + itemPrice
                 + " Quanity: " + itemQuantity + "\n";
-    }
-
-    @Override
-    public int setItemQuantity(int newQuantity) {
-        this.itemQuantity = newQuantity;
-        return itemQuantity;
     }
 
 }

@@ -50,4 +50,6 @@ public class BigDecimalReferences {
         System.out.println(value2 + " compareTo " + value1 + " => " + value2.compareTo(value1));
         System.out.println(value1 + " compareTo " + value1 + " => " + value1.compareTo(value1));
     }
+
+
 }
