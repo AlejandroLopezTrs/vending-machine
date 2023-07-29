@@ -238,7 +238,21 @@ public class VendingMachineCLI implements TImeAndDate {
         }
         return BigDecimal.ZERO;
     }
-
+    //TODO: ITEM  combine methods
+    private BigDecimal getItemPrice(String userInputItemCode, int purchaseItemCount) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Month currentMonth = currentDateTime.getMonth();
+        BigDecimal itemPrice = BigDecimal.ZERO;
+        if (purchaseItemCount % 2 == 0 && currentMonth == Month.JULY) {
+            itemPrice.subtract(BigDecimal.ONE);
+        }
+        for (Inventory item : items) {
+            if (item.getItemCode().equals(userInputItemCode)) {
+                return itemPrice;
+            }
+        }
+        return itemPrice;
+    }
 
     //TODO: finish transaction method
     private void finishTransaction() {
