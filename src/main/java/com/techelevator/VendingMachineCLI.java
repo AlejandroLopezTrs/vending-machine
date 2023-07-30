@@ -2,26 +2,37 @@ package com.techelevator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 
 public class VendingMachineCLI implements TImeAndDate {
 
     List<Inventory> items = new ArrayList<>();
-    private BigDecimal moneyUsed = BigDecimal.valueOf(0.00).setScale(2);
-    private BigDecimal moneyAdded = BigDecimal.valueOf(0.00).setScale(2);
+    private BigDecimal moneyUsed = BigDecimal.valueOf(0.00);
+    private BigDecimal moneyAdded = BigDecimal.valueOf(0.00);
     private final BigDecimal ONE_DOLLAR = BigDecimal.valueOf(1.00).setScale(2);
     private final BigDecimal FIVE_DOLLAR = BigDecimal.valueOf(5.00).setScale(2);
     private final BigDecimal TEN_DOLLAR = BigDecimal.valueOf(10.00).setScale(2);
     private BigDecimal remainingBalance = BigDecimal.valueOf(0.00).setScale(2);
     private int itemQuantity = 5;
 
+    public BigDecimal getMoneyUsed() {
+        return moneyUsed;
+    }
 
+    public BigDecimal getMoneyAdded() {
+        return moneyAdded;
+    }
 
+    public BigDecimal getRemainingBalance() {
+        return remainingBalance;
+    }
 
     public static void main(String[] args) throws FileNotFoundException {
         VendingMachineCLI cli = new VendingMachineCLI();
@@ -63,12 +74,45 @@ public class VendingMachineCLI implements TImeAndDate {
         }
     }
 
-    //TODO:vendingMachineDog
-    public void vendingMachineLog() throws FileNotFoundException {
-        String filePath = "log.csv";
-        File file = new File(filePath);
-        PrintWriter vendingMachineLog = new PrintWriter(file);
-
+    //TODO: print all successful transactions
+    private void writeTransactionLog(BigDecimal amountDepositedSpent, BigDecimal newBalance) {
+        try {
+            String filePath = "Log.txt";
+            PrintWriter printWriter = new PrintWriter(new FileWriter(filePath, true));
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDateTime = now.format(formatter);
+            printWriter.printf("\n" + formattedDateTime +  " FEED MONEY: $" + amountDepositedSpent + " | $" + newBalance);
+            printWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error writing to transaction log file: " + e.getMessage());
+        }
+    }
+    private void writeTransactionLogProductPurchase(String itemName, String itemCode, BigDecimal amountDepositedSpent, BigDecimal newBalance) {
+        try {
+            String filePath = "Log.txt";
+            PrintWriter printWriter = new PrintWriter(new FileWriter(filePath, true));
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDateTime = now.format(formatter);
+            printWriter.printf("\n" + formattedDateTime +  "  PURCHASE: " + itemCode + " | " + itemName + " | $" + amountDepositedSpent + " | $" + newBalance);
+            printWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error writing to transaction log file: " + e.getMessage());
+        }
+    }
+    private void writeTransactionLogGiveChange(BigDecimal amountDepositedSpent, BigDecimal newBalance) {
+        try {
+            String filePath = "Log.txt";
+            PrintWriter printWriter = new PrintWriter(new FileWriter(filePath, true));
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm:ss a");
+            String formattedDateTime = now.format(formatter);
+            printWriter.printf("\n" + formattedDateTime + " GIVE CHANGE: $" + amountDepositedSpent + " | $" + newBalance);
+            printWriter.close();
+        } catch (Exception e) {
+            System.out.println("Error writing to transaction log file: " + e.getMessage());
+        }
     }
 
     //TODO: load inventory method
@@ -138,13 +182,20 @@ public class VendingMachineCLI implements TImeAndDate {
                 System.out.println("How much would you like to add?\n" +
                         "(1) $1.00\n" + "(2) $5.00\n" + "(3) $10.00\n" + "(4) Back to purchase menu");
                 int numberSelection = this.getUserInput();
-                //TODO numberformatexception
                 if (numberSelection == 1) {
                     moneyAdded = moneyAdded.add(ONE_DOLLAR);
+
+                    writeTransactionLog(ONE_DOLLAR , moneyAdded);
+
                 } else if (numberSelection == 2) {
                     moneyAdded = moneyAdded.add(FIVE_DOLLAR);
+
+                    writeTransactionLog(FIVE_DOLLAR , moneyAdded);
+
                 } else if (numberSelection == 3) {
                     moneyAdded = moneyAdded.add(TEN_DOLLAR);
+                    writeTransactionLog(TEN_DOLLAR , moneyAdded);
+
                 } else if (numberSelection == 4) {
                     return moneyAdded;
                 } else if
@@ -232,6 +283,7 @@ public class VendingMachineCLI implements TImeAndDate {
             BigDecimal itemPrice = selectedItem.getItemPrice().add(itemPriceAdjustment);
             BigDecimal remainingBalance = moneyAdded.subtract(itemPrice);
 
+
             if (remainingBalance.compareTo(BigDecimal.ZERO) <= 0) {
                 System.out.println("Insufficient Funds. Please return to purchase menu to add more funds.");
                 return;
@@ -241,10 +293,10 @@ public class VendingMachineCLI implements TImeAndDate {
             String itemCategory = selectedItem.getItemType();
             String message = itemTypeMessage.get(itemCategory);
             String itemName = selectedItem.getItemName();
+            writeTransactionLogProductPurchase(itemName, userInputItemCode, itemPrice, remainingBalance);
 
             System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
             moneyAdded = remainingBalance;
-
             System.out.println("\nWould you like to purchase another item from this category?\n" + "(1) Yes\n(2) No");
             int numberSelection = this.getUserInput();
             if (numberSelection != 1) {
@@ -273,6 +325,7 @@ public class VendingMachineCLI implements TImeAndDate {
         int nickelCount = 0;
         int dimeCount = 0;
         int quarterCount = 0;
+        BigDecimal moneyLeft = moneyAdded;
         while (true) {
             while (moneyAdded.compareTo(QUARTER) >= 0.00) {
                 moneyAdded = moneyAdded.subtract(QUARTER);
@@ -288,6 +341,8 @@ public class VendingMachineCLI implements TImeAndDate {
             }
             System.out.println("Change Dispensed: \n" + nickelCount + " Nickels\n" + dimeCount + " Dimes\n" + quarterCount + " Quarters\n");
             this.finishTransaction(moneyAdded);
+            writeTransactionLogGiveChange(moneyLeft , moneyAdded);
+
             break;
         }
         return moneyAdded;
@@ -296,7 +351,6 @@ public class VendingMachineCLI implements TImeAndDate {
     //TODO: finish transaction method
     private void finishTransaction(BigDecimal moneyAdded) {
         System.out.println("Remaining Balance: $" + moneyAdded);
-        System.out.println("Thank you! Enjoy your snacks!");
     }
 
     @Override
