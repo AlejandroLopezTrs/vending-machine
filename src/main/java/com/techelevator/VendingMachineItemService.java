@@ -89,7 +89,7 @@ public class VendingMachineItemService {
     private BigDecimal adjustPrice() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Month currentMonth = currentDateTime.getMonth();
-        if (currentMonth == Month.JULY && getNumberOfItemsPurchased() % 2 == 1) {
+        if (currentMonth == Month.AUGUST && getNumberOfItemsPurchased() % 2 == 1) {
             return BigDecimal.valueOf(-1);
         }
         return BigDecimal.ZERO;
