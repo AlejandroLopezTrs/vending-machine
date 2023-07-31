@@ -1,19 +1,31 @@
 package com.techelevator;
 
-import java.io.FileNotFoundException;
 import java.math.BigDecimal;
 
 public class VendingMachineItem implements VendingMachineInventory {
 
-    private String itemName;
-    private String itemCode;
-    private String itemType;
-    private BigDecimal itemPrice;
+    private final String itemName;
+    private final String itemCode;
+    private final String itemType;
+    private final BigDecimal itemPrice;
     private int itemQuantity;
 
 
+    public VendingMachineItem(String itemCode, String itemName, double itemPrice, String itemType, int itemQuantity) {
+        this.itemName = itemName;
+        this.itemCode = itemCode;
+        this.itemType = itemType;
+        this.itemPrice = BigDecimal.valueOf(itemPrice);
+        this.itemQuantity = itemQuantity;
+    }
+
     public int getItemQuantity() {
         return itemQuantity;
+    }
+
+    @Override
+    public void setItemQuantity(int itemQuantity) {
+        this.itemQuantity = itemQuantity;
     }
 
     public String getItemName() {
@@ -32,20 +44,6 @@ public class VendingMachineItem implements VendingMachineInventory {
         return itemPrice;
     }
 
-    public void getItemTypeSelector(int numberSelection) {
-
-    }
-
-
-    public VendingMachineItem(String itemCode, String itemName, double itemPrice, String itemType, int itemQuantity) {
-        this.itemName = itemName;
-        this.itemCode = itemCode;
-        this.itemType = itemType;
-        this.itemPrice = BigDecimal.valueOf(itemPrice);
-        this.itemQuantity = itemQuantity;
-    }
-
-
     @Override
     public String toString() {
         return "Item Code:" + itemCode + " Item: " + itemName + " Price: $" + itemPrice
@@ -53,17 +51,12 @@ public class VendingMachineItem implements VendingMachineInventory {
     }
 
     @Override
-    public void setItemQuantity(int itemQuantity) {
-        this.itemQuantity = itemQuantity;
-    }
-
-    @Override
-    public void addItem(String items) throws FileNotFoundException {
+    public void addItem(String items) {
 
     }
 
     @Override
-    public void addItem() throws FileNotFoundException {
+    public void addItem() {
 
     }
 }

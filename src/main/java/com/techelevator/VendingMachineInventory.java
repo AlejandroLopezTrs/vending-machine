@@ -5,21 +5,26 @@ import java.math.BigDecimal;
 
 public interface VendingMachineInventory {
     void addItem(String items) throws FileNotFoundException;
-    public String getItemName();
-    public int getItemQuantity();
+
+    String getItemName();
+
+    int getItemQuantity();
+
+    void setItemQuantity(int itemQuantity);
 
     void addItem() throws FileNotFoundException;
 
-    public void setItemQuantity(int itemQuantity);
-    public String getItemCode();
-    public String getItemType();
+    String getItemCode();
 
-    public BigDecimal getItemPrice();
-    default void selectProductType(){
+    String getItemType();
+
+    BigDecimal getItemPrice();
+
+    default void selectProductType() {
     }
+
     String toString();
 
-    void getItemTypeSelector(int numberSelection);
 }
 
 

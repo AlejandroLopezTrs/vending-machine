@@ -36,7 +36,7 @@ public class VendingMachineLog {
         }
     }
 
-   public static void writeTransactionLogGiveChange(BigDecimal amountDepositedSpent, BigDecimal newBalance) {
+    public static void writeTransactionLogGiveChange(BigDecimal amountDepositedSpent, BigDecimal newBalance) {
         try {
             String filePath = "Log.txt";
             PrintWriter printWriter = new PrintWriter(new FileWriter(filePath, true));

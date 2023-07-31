@@ -13,8 +13,8 @@ import static com.techelevator.VendingMachineLog.writeTransactionLogGiveChange;
 
 public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, UserInputs {
 
-    private VendingMachineBalance vendingMachineBalance = new VendingMachineBalance();
-    private VendingMachineItemService itemService = new VendingMachineItemService(vendingMachineBalance);
+    private final VendingMachineBalance vendingMachineBalance = new VendingMachineBalance();
+    private final VendingMachineItemService itemService = new VendingMachineItemService(vendingMachineBalance);
 
     public static void main(String[] args) throws FileNotFoundException {
         VendingMachineCLI cli = new VendingMachineCLI();
@@ -220,7 +220,7 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
     }
 
     @Override
-    public void addItem(String items) throws FileNotFoundException {
+    public void addItem(String items) {
 
     }
 
@@ -235,12 +235,12 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
     }
 
     @Override
-    public void addItem() throws FileNotFoundException {
+    public void setItemQuantity(int itemQuantity) {
 
     }
 
     @Override
-    public void setItemQuantity(int itemQuantity) {
+    public void addItem() {
 
     }
 
@@ -257,10 +257,6 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
     @Override
     public BigDecimal getItemPrice() {
         return null;
-    }
-
-    @Override
-    public void getItemTypeSelector(int numberSelection) {
     }
 
 

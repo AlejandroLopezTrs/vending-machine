@@ -26,5 +26,4 @@ public class VendingMachineBalanceTest {
         BigDecimal updatedBalance = vendingMachineBalance.getBalance();
         assertEquals(BigDecimal.valueOf(5.00), updatedBalance);
     }
-
 }

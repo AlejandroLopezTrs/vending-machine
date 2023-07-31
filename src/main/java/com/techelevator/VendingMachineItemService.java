@@ -10,12 +10,12 @@ import java.util.*;
 import static com.techelevator.VendingMachineLog.writeTransactionLogProductPurchase;
 
 public class VendingMachineItemService {
-    private List<VendingMachineInventory> items = new ArrayList<>();
-    private Map<String, String> itemTypeMessage = new HashMap<>();
-    private VendingMachineBalance vendingMachineBalance;
+    private final List<VendingMachineInventory> items = new ArrayList<>();
+    private final Map<String, String> itemTypeMessage = new HashMap<>();
+    private final VendingMachineBalance vendingMachineBalance;
     private int numberOfItemsPurchased = 0;
 
-    public VendingMachineItemService(VendingMachineBalance vendingMachineBalance){
+    public VendingMachineItemService(VendingMachineBalance vendingMachineBalance) {
         this.vendingMachineBalance = vendingMachineBalance;
     }
 
@@ -63,19 +63,20 @@ public class VendingMachineItemService {
         String message = itemTypeMessage.get(itemCategory);
         String itemName = selectedItem.getItemName();
         remainingBalance = this.vendingMachineBalance.subtractFromBalance(itemPrice);
-       writeTransactionLogProductPurchase(itemName, selectedItem.getItemCode(), itemPrice, remainingBalance);
+        writeTransactionLogProductPurchase(itemName, selectedItem.getItemCode(), itemPrice, remainingBalance);
         System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
 
     }
+
     public List<VendingMachineInventory> itemTypeSelector(int numberSelection) throws Exception {
         if (numberSelection == 1) {
-           return items.subList(0, 4);
+            return items.subList(0, 4);
 
         } else if (numberSelection == 2) {
             return items.subList(4, 8);
 
         } else if (numberSelection == 3) {
-          return items.subList(8, 12);
+            return items.subList(8, 12);
 
         } else if (numberSelection == 4) {
             return items.subList(12, 16);
@@ -84,6 +85,7 @@ public class VendingMachineItemService {
         }
         throw new Exception("Invalid number selection: Please enter a number between 1 and 5 and try again.");
     }
+
     private BigDecimal adjustPrice() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         Month currentMonth = currentDateTime.getMonth();
@@ -92,6 +94,7 @@ public class VendingMachineItemService {
         }
         return BigDecimal.ZERO;
     }
+
     public List<VendingMachineInventory> getItems() {
         return items;
     }

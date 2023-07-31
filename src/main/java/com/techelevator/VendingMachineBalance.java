@@ -10,12 +10,13 @@ public class VendingMachineBalance {
     public static final BigDecimal DIME = BigDecimal.valueOf(0.10);
     public static final BigDecimal QUARTER = BigDecimal.valueOf(0.25);
     private BigDecimal balance = BigDecimal.valueOf(0.00);
-    private final BigDecimal remainingBalance = BigDecimal.valueOf(0.00).setScale(2);
-public BigDecimal addToBalance(BigDecimal amount){
-    this.balance = this.balance.add(amount);
-    return this.balance;
-}
-    public BigDecimal subtractFromBalance(BigDecimal amount){
+
+    public BigDecimal addToBalance(BigDecimal amount) {
+        this.balance = this.balance.add(amount);
+        return this.balance;
+    }
+
+    public BigDecimal subtractFromBalance(BigDecimal amount) {
         this.balance = this.balance.subtract(amount);
         return this.balance;
     }
