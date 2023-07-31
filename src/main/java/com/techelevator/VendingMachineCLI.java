@@ -92,7 +92,7 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
                         + "(2) Candy\n" + "(3) Munchy\n" + "(4) Gum\n" + "(5) Return to purchase menu");
                 int numberSelection = this.getUserInput();
                 List<VendingMachineInventory> selectedItems = this.itemService.itemTypeSelector(numberSelection);
-                if (selectedItems == null){
+                if (selectedItems == null) {
                     return;
                 }
                 this.itemPurchase(selectedItems);
@@ -104,12 +104,13 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
         }
 
     }
+
     //TODO: purchasing item method
     private void itemPurchase(List<VendingMachineInventory> selectedItems) {
         String userInputItemCode;
         VendingMachineInventory selectedItem;
         while (true) {
-            for(VendingMachineInventory item : selectedItems){
+            for (VendingMachineInventory item : selectedItems) {
                 System.out.println(item);
             }
             System.out.println("Please enter the item code you would like to purchase.");
@@ -121,9 +122,9 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
                     break;
                 }
             }
-            try{
+            try {
                 this.itemService.purchaseItem(selectedItem);
-            } catch (Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
                 continue;
             }
@@ -136,6 +137,7 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
         }
 
     }
+
     //TODO: get user input method
     public int getUserInput() {
         Scanner userInput = new Scanner(System.in);
@@ -207,10 +209,6 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
         writeTransactionLogGiveChange(moneyLeft, balance);
     }
 
-
-    //TODO: ITEM  combine methods
-
-
     //TODO: finish transaction method
     void finishTransaction(BigDecimal moneyAdded) {
         System.out.println("Remaining Balance: $" + moneyAdded);
@@ -260,6 +258,7 @@ public class VendingMachineCLI implements TImeAndDate, VendingMachineInventory, 
     public BigDecimal getItemPrice() {
         return null;
     }
+
     @Override
     public void getItemTypeSelector(int numberSelection) {
     }

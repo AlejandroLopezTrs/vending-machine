@@ -67,7 +67,7 @@ public class VendingMachineItemService {
         System.out.println("Item Name: " + itemName + " | Item Cost: $" + itemPrice + " | Remaining Balance: $ " + remainingBalance + " | Message: " + message);
 
     }
-    public List<VendingMachineInventory> itemTypeSelector(int numberSelection) throws Exception{
+    public List<VendingMachineInventory> itemTypeSelector(int numberSelection) throws Exception {
         if (numberSelection == 1) {
            return items.subList(0, 4);
 

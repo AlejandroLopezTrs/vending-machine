@@ -16,9 +16,6 @@ public class VendingMachineItem implements VendingMachineInventory {
         return itemQuantity;
     }
 
-
-
-
     public String getItemName() {
         return itemName;
     }
@@ -49,20 +46,22 @@ public class VendingMachineItem implements VendingMachineInventory {
     }
 
 
-
     @Override
     public String toString() {
-        return "Item Code:" + itemCode + " Item: "+ itemName + " Price: $" + itemPrice
+        return "Item Code:" + itemCode + " Item: " + itemName + " Price: $" + itemPrice
                 + " Quantity: " + itemQuantity;
     }
+
     @Override
     public void setItemQuantity(int itemQuantity) {
         this.itemQuantity = itemQuantity;
     }
+
     @Override
     public void addItem(String items) throws FileNotFoundException {
 
     }
+
     @Override
     public void addItem() throws FileNotFoundException {
 
